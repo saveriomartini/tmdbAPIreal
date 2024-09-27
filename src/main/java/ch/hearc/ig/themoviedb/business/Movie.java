@@ -4,20 +4,23 @@ import java.util.List;
 import java.util.Set;
 
 public class Movie {
-    private String title;
+    private int id;
+    private String original_title;
+    private double rating;
+
     private String releaseDate;
     private String overview;
-    private double rating;
+
     private int runtime;
     private Set<String> genres;
 
     // Getters and Setters
     public String getTitle() {
-        return title;
+        return original_title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.original_title = title;
     }
 
     public String getReleaseDate() {
@@ -64,7 +67,7 @@ public class Movie {
     @Override
     public String toString() {
         return "Movie{" +
-                "title='" + title + '\'' +
+                "title='" + original_title + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", overview='" + overview + '\'' +
                 ", rating=" + rating +
