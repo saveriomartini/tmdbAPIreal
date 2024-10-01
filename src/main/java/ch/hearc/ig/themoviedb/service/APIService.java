@@ -7,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.stream.Collectors;
 
-public class MovieAPIService {
+public class APIService {
     private static final String API_KEY = "944f634d1576af81ac19ff8342f8e7e4";
 
     public String fetchMovieDetails(int movieId) throws IOException {
