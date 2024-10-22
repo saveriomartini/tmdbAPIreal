@@ -11,10 +11,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for handling movie-related operations.
+ */
 public class MovieService {
     private final APIService tmdbAPIService = new APIService();
 
-    // Metodo esistente per ottenere i dettagli del film
+    /**
+     * Retrieves the details of a movie.
+     *
+     * @param movieId the ID of the movie
+     * @return the details of the movie
+     * @throws IOException if an I/O error occurs
+     * @throws JsonException if a JSON parsing error occurs
+     */
     public Movie getMovieDetails(int movieId) throws IOException, JsonException {
         String jsonResponse = tmdbAPIService.fetchMovieDetails(movieId);
         JsonObject json = (JsonObject) Jsoner.deserialize(jsonResponse);
@@ -31,7 +41,14 @@ public class MovieService {
         return currentMovie;
     }
 
-    // Metodo aggiunto per deserializzare i crediti
+    /**
+     * Retrieves the credits of a movie.
+     *
+     * @param movieId the ID of the movie
+     * @return a list of credits for the movie
+     * @throws IOException if an I/O error occurs
+     * @throws JsonException if a JSON parsing error occurs
+     */
     public List<Credit> getMovieCredits(int movieId) throws IOException, JsonException {
         String jsonResponse = tmdbAPIService.fetchMovieCredits(movieId);
         JsonObject json = (JsonObject) Jsoner.deserialize(jsonResponse);
@@ -42,23 +59,23 @@ public class MovieService {
             JsonObject castJson = (JsonObject) castMember;
             Credit credit = new Credit();
 
-            // Deserializzare i dettagli della persona (nome, id)
+            // Deserialize person details (name, id)
             Person person = new Person();
             person.setName((String) castJson.get("name"));
             person.setId(((BigDecimal) castJson.get("id")).intValue());
             credit.setPerson(person);
 
-            // Deserializzare il dipartimento
+            // Deserialize department
             Department department = new Department();
             department.setName((String) castJson.get("known_for_department"));
             credit.setDepartment(department);
 
-            // Deserializzare il lavoro (se presente)
+            // Deserialize job
             if (castJson.containsKey("job")) {
-                credit.setJob((String) castJson.get("job"));
+                credit.setJob((Job) castJson.get("job"));
             }
 
-            // Deserializzare il personaggio (se presente)
+            // Deserialize character
             if (castJson.containsKey("character")) {
                 credit.setCharacter((String) castJson.get("character"));
             }
@@ -69,6 +86,13 @@ public class MovieService {
         return credits;
     }
 
+    /**
+     * Prints the credits of a movie.
+     *
+     * @param movieId the ID of the movie
+     * @throws IOException if an I/O error occurs
+     * @throws JsonException if a JSON parsing error occurs
+     */
     public void printMovieCredits(int movieId) throws IOException, JsonException {
         List<Credit> credits = getMovieCredits(movieId);
         for (Credit credit : credits) {

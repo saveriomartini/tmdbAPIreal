@@ -51,7 +51,7 @@ public class Application {
                     addCurrentMovieToCollection();
                     break;
                 case 4:
-                    //displayAllMoviesInCollection();
+                    System.out.println(FakeDB.getAllMovies().toString());
                     break;
                 case 0:
                     System.out.println("Goodbye!");
