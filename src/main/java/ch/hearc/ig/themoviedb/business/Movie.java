@@ -1,5 +1,14 @@
 package ch.hearc.ig.themoviedb.business;
 
+import ch.hearc.ig.themoviedb.service.APIService;
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonException;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsoner;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Movie {
@@ -98,12 +107,12 @@ public String toString() {
         sb.append("\nID: ").append(this.id);
         sb.append("\nOriginal Title: ").append(this.original_title);
         sb.append("\nRating: ").append(this.rating);
-        sb.append("\nYear: ").append(this.releaseDate);
+        sb.append("\nRelease Date: ").append(this.releaseDate);
         sb.append("\nGenres: ").append(this.genres);
         sb.append("\nRuntime: ").append(this.runtime).append("'");
         sb.append("\nTagline: ").append(this.tagline);
         sb.append("\nOverview: ").append(this.overview);
-        //sb.append("\nCast: ").append(this.cast);
+        sb.append("\nCast: ").append(this.cast);
 
         sb.append("\nClass: ").append(this.getClass());
 

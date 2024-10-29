@@ -1,30 +1,34 @@
 package ch.hearc.ig.themoviedb.presentation;
 
+import ch.hearc.ig.themoviedb.business.MovieBuilder;
 import ch.hearc.ig.themoviedb.persistence.FakeDB;
-import ch.hearc.ig.themoviedb.service.MovieService;
 import ch.hearc.ig.themoviedb.business.Movie;
+import ch.hearc.ig.themoviedb.persistence.RealDB;
 import com.github.cliftonlabs.json_simple.JsonException;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
 
     private static Scanner scanner;
-    private static FakeDB fakeDB = new FakeDB();
+   //private static FakeDB fakeDB = new FakeDB();
+    private static RealDB realDB = new RealDB();
     private static Movie currentMovie;
 
     public static void main(String[] args) {
         scanner = new Scanner(System.in);
-        MovieService movieService = new MovieService();
+        MovieBuilder movieBuilder = new MovieBuilder();
 
         System.out.println("Welcome to TheMovieDB! What would you like to do?");
         int choice;
         do {
             printMainMenu();
             choice = readInt();
-            proceedMainMenu(choice, movieService);
+            proceedMainMenu(choice, movieBuilder);
         } while (choice != 0);
     }
 
@@ -38,14 +42,14 @@ public class Application {
         System.out.println("0. Quit the program");
     }
 
-    private static void proceedMainMenu(int choice, MovieService movieService) {
+    private static void proceedMainMenu(int choice, MovieBuilder movieBuilder) {
         try {
             switch (choice) {
                 case 1:
-                    searchMovieById(movieService);
+                    searchMovieById(movieBuilder);
                     break;
                 case 2:
-                    //searchMovieByKeyword(movieService);
+                    searchMovieByKeyword(movieBuilder);
                     break;
                 case 3:
                     addCurrentMovieToCollection();
@@ -60,27 +64,57 @@ public class Application {
                     System.out.println("Error: Invalid input. Please try again.");
                     break;
             }
-        } catch (IOException | JsonException e) {
+        } catch (IOException | JsonException | SQLException e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
     }
 
 
-    private static void searchMovieById(MovieService movieService) throws IOException, JsonException {
+    private static void searchMovieById(MovieBuilder movieBuilder) throws IOException, JsonException {
         System.out.println("Please enter the movie ID:");
         int movieId = readInt();
-        currentMovie = movieService.getMovieDetails(movieId);
-        System.out.println("Movie found: " + currentMovie);
+        currentMovie = movieBuilder.getMovieDetails(movieId);
+        System.out.println(currentMovie);
+    }
+
+    private static void searchMovieByKeyword(MovieBuilder movieBuilder) throws IOException, JsonException {
+        System.out.println("Please enter the keyword:");
+        String keyword = readString();
+
+        // Get the list of movies based on the keyword search
+        List<Movie> movies = movieBuilder.getMovieDetails(keyword); // Updated method name
+
+        System.out.println("Search results:");
+        for (Movie movie : movies) {
+            try {
+                // For each movie in the list, use the ID to fetch full details
+                Movie detailedMovie = movieBuilder.getMovieDetails(movie.getId());
+                System.out.println(detailedMovie);
+            } catch (Exception e) {
+                System.err.println("Error fetching details for movie ID " + movie.getId() + ": " + e.getMessage());
+            }
+        }
     }
 
 
 
-    private static void addCurrentMovieToCollection() {
+
+
+    private static void addCurrentMovieToCollection() throws SQLException {
         if (currentMovie != null) {
-            fakeDB.addMovie(currentMovie);
+            RealDB.insertMovie(currentMovie);
             System.out.println("The current movie has been added to the collection.");
         } else {
             System.out.println("No current movie to add. Please search for a movie first.");
+        }
+    }
+
+    private static void displayAllMoviesInCollection() {
+        assert RealDB.getAllMovies() != null;
+        if (RealDB.getAllMovies().isEmpty()) {
+            System.out.println("The collection is empty.");
+        } else {
+            System.out.println(RealDB.getAllMovies().toString());
         }
     }
 
