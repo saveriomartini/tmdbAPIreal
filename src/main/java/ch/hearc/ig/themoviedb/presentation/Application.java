@@ -8,6 +8,7 @@ import com.github.cliftonlabs.json_simple.JsonException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -39,6 +40,8 @@ public class Application {
         System.out.println("2. Search a movie by keyword");
         System.out.println("3. Add the current movie to the collection");
         System.out.println("4. Display all movies in the collection");
+        System.out.println("======================================================");
+        System.out.println("5. Update a movie in the collection");
         System.out.println("0. Quit the program");
     }
 
@@ -55,7 +58,10 @@ public class Application {
                     addCurrentMovieToCollection();
                     break;
                 case 4:
-                    System.out.println(FakeDB.getAllMovies().toString());
+                    displayAllMoviesInCollection();
+                    break;
+                case 5:
+                    updateMovieInCollection();
                     break;
                 case 0:
                     System.out.println("Goodbye!");
@@ -65,6 +71,17 @@ public class Application {
                     break;
             }
         } catch (IOException | JsonException | SQLException e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+    }
+
+    private static void updateMovieInCollection() {
+        System.out.println("Please enter the new movie ID:");
+        int newMovieId = readInt();
+        try {
+            realDB.updateMovieId(newMovieId);
+            System.out.println("The movie ID has been updated.");
+        } catch (SQLException e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
     }
@@ -109,12 +126,15 @@ public class Application {
         }
     }
 
-    private static void displayAllMoviesInCollection() {
+    private static void displayAllMoviesInCollection() throws SQLException {
         assert RealDB.getAllMovies() != null;
         if (RealDB.getAllMovies().isEmpty()) {
             System.out.println("The collection is empty.");
         } else {
-            System.out.println(RealDB.getAllMovies().toString());
+            System.out.println(RealDB.getAllMovies().size() + " movies found in the collection:");
+            for (Movie movie : RealDB.getAllMovies()) {
+                System.out.println(movie);
+            }
         }
     }
 

@@ -1,14 +1,5 @@
 package ch.hearc.ig.themoviedb.business;
 
-import ch.hearc.ig.themoviedb.service.APIService;
-import com.github.cliftonlabs.json_simple.JsonArray;
-import com.github.cliftonlabs.json_simple.JsonException;
-import com.github.cliftonlabs.json_simple.JsonObject;
-import com.github.cliftonlabs.json_simple.Jsoner;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 
 public class Movie {
@@ -23,6 +14,19 @@ public class Movie {
     private Set<Person> cast;
 
 
+    // Constructors
+    public Movie() {
+    }
+
+    public Movie(int id, String original_title, double rating, String releaseDate, int runtime, String tagline, String overview) {
+        this.id = id;
+        this.original_title = original_title;
+        this.rating = rating;
+        this.releaseDate = releaseDate;
+        this.runtime = runtime;
+        this.tagline = tagline;
+        this.overview = overview;
+    }
 
 
     // Getters and Setters
