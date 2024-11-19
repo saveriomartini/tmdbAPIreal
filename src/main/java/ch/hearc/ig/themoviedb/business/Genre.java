@@ -1,6 +1,6 @@
 package ch.hearc.ig.themoviedb.business;
 
-public class Genre {
+public class Genre implements TmdbItem {
     private int id;
     private String name;
 
@@ -30,9 +30,6 @@ public class Genre {
 
     @Override
     public String toString() {
-        return "Genre{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 }

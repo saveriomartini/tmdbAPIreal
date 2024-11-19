@@ -1,41 +1,61 @@
 package ch.hearc.ig.themoviedb.business;
 
+import oracle.sql.DATE;
+
+import java.io.Serializable;
+import java.sql.Date;
 import java.util.Set;
 
-public class Movie {
-    private int id;
+public class Movie implements TmdbItem, Serializable {
+    private static final long serialVersionUID = 1L;
+    private int ID;
+    private int id_tmdb;
     private String original_title;
     private double rating;
-    private String releaseDate;
-    private Set<String> genres;
+    private Date releaseDate;
     private int runtime;
     private String tagline;
     private String overview;
-    private Set<Person> cast;
+    private String poster_path;
+
+    private Language original_language;
+    private Set<Genre> genres;
 
 
     // Constructors
     public Movie() {
     }
 
-    public Movie(int id, String original_title, double rating, String releaseDate, int runtime, String tagline, String overview) {
-        this.id = id;
+    public Movie(int ID, int id_tmdb, String original_title, double rating, Date releaseDate, int runtime, String tagline, String overview, String poster_path, Language original_language, Set<Genre> genres) {
+        this.ID = ID;
+        this.id_tmdb = id_tmdb;
         this.original_title = original_title;
         this.rating = rating;
         this.releaseDate = releaseDate;
         this.runtime = runtime;
         this.tagline = tagline;
         this.overview = overview;
+        this.poster_path = null;
+        this.original_language = null;
+        this.genres = null;
     }
 
 
     // Getters and Setters
-    public int getId() {
-        return id;
+    public int getID() {
+        return ID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public int getId_tmdb() {
+        return id_tmdb;
+    }
+
+    public void setId_tmdb(int id_tmdb) {
+        this.id_tmdb = id_tmdb;
     }
 
     public String getOriginal_title() {
@@ -54,19 +74,19 @@ public class Movie {
         this.rating = rating;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
-    public Set<String> getGenres() {
+    public Set<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(Set<String> genres) {
+    public void setGenres(Set<Genre> genres) {
         this.genres = genres;
     }
 
@@ -94,13 +114,26 @@ public class Movie {
         this.overview = overview;
     }
 
-    public Set<Person> getCast() {
-        return cast;
+    public String getPoster_path() {
+        return poster_path;
     }
 
-    public void setCast(Set<Person> cast) {
-        this.cast = cast;
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
     }
+
+    public Language getOriginal_language() {
+        return original_language;
+    }
+
+    public void setOriginal_language(Language original_language) {
+        this.original_language = original_language;
+    }
+
+
+
+
+
 
     // toString
     @Override
@@ -108,20 +141,22 @@ public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\nMovie Details:");
 
-        sb.append("\nID: ").append(this.id);
-        sb.append("\nOriginal Title: ").append(this.original_title);
+        sb.append("\nID: ").append(this.id_tmdb);
+        sb.append("\nTitle: ").append(this.original_title);
+        sb.append("\nTagline: ").append(this.tagline);
         sb.append("\nRating: ").append(this.rating);
+        sb.append("\nLanguage: ").append(this.original_language);
         sb.append("\nRelease Date: ").append(this.releaseDate);
         sb.append("\nGenres: ").append(this.genres);
         sb.append("\nRuntime: ").append(this.runtime).append("'");
-        sb.append("\nTagline: ").append(this.tagline);
         sb.append("\nOverview: ").append(this.overview);
-        sb.append("\nCast: ").append(this.cast);
-
-        sb.append("\nClass: ").append(this.getClass());
+        sb.append("\nPoster Path: ").append(this.poster_path);
 
         return sb.toString();
     }
 
-
+    @Override
+    public int getId() {
+        return 0;
+    }
 }

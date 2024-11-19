@@ -1,15 +1,15 @@
 package ch.hearc.ig.themoviedb.business;
 
-public class Language {
+public class Language implements TmdbItem {
     private int id;
-    private String name;
+    private String code;
 
     public Language() {
     }
 
-    public Language(int id, String name) {
+    public Language(int id, String code) {
         this.id = id;
-        this.name = name;
+        this.code = code;
     }
 
     public int getId() {
@@ -20,19 +20,35 @@ public class Language {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCode() {
+        return code;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCode(String code) {
+        this.code = code;
     }
+
+    private String getLanguageName(String code) {
+        switch (code) {
+            case "en": return "English";
+            case "fr": return "French";
+            case "es": return "Spanish";
+            case "de": return "German";
+            case "it": return "Italian";
+            case "ja": return "Japanese";
+            case "ko": return "Korean";
+            case "pt": return "Portuguese";
+            case "ru": return "Russian";
+            case "zh": return "Chinese";
+
+            // Add more mappings as needed
+            default: return "Unknown";
+        }
+    }
+
 
     @Override
     public String toString() {
-        return "Language{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return getLanguageName(code);
     }
 }
