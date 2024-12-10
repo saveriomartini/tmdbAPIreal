@@ -159,4 +159,13 @@ public String toString() {
     public int getId() {
         return 0;
     }
+
+    public String displayBasics() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.id_tmdb);
+        sb.append(" - ").append(this.original_title);
+        sb.append(" - ").append(this.releaseDate != null ? this.releaseDate.toLocalDate().getYear() : "N/A");
+
+        return sb.toString();
+    }
 }

@@ -2,16 +2,13 @@ package ch.hearc.ig.themoviedb.business;
 
 public class Genre implements TmdbItem {
     private int id;
+    private int id_tmdb;
     private String name;
+
+
 
     public Genre() {
     }
-
-    public Genre(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public int getId() {
         return id;
     }
@@ -31,5 +28,13 @@ public class Genre implements TmdbItem {
     @Override
     public String toString() {
         return name;
+    }
+
+    public int getId_tmdb() {
+        return id_tmdb;
+    }
+
+    public void setId_tmdb(int id_tmdb) {
+        this.id_tmdb = id_tmdb;
     }
 }

@@ -3,9 +3,6 @@ package ch.hearc.ig.themoviedb.presentation;
 import ch.hearc.ig.themoviedb.business.Movie;
 import ch.hearc.ig.themoviedb.business.TmdbItem;
 import ch.hearc.ig.themoviedb.network.SocketClientService;
-import ch.hearc.ig.themoviedb.network.SocketServerService;
-import ch.hearc.ig.themoviedb.persistence.MovieDAO;
-import ch.hearc.ig.themoviedb.service.APIService;
 import com.github.cliftonlabs.json_simple.JsonException;
 
 import java.io.IOException;
@@ -15,11 +12,10 @@ import java.util.*;
 public class Application {
 
     private static Scanner scanner;
-    private static MovieDAO movieDAO = new MovieDAO();
     private static Movie currentMovie;
+    private static Map<Integer, TmdbItem> cache = new HashMap<>();
 
     public static void main(String[] args) {
-        Map<Integer, TmdbItem> cache = new HashMap<>();
         scanner = new Scanner(System.in);
 
 
@@ -41,14 +37,14 @@ public class Application {
 
     private static void printMainMenu(Map <Integer, TmdbItem> cache) {
         System.out.println("======================================================");
-        System.out.println("1. Search for a movie");
+        System.out.println("1. Search for a movie calling the API");
         System.out.println("======================================================");
-        System.out.println("2. Create your collection");
+        System.out.println("2. Create your collection from cache");
         System.out.println("3. Read all movies in the collection");
         System.out.println("4. Update a movie in the collection");
         System.out.println("5. Delete a movie from the collection");
         System.out.println("======================================================");
-        System.out.println("0. Leave");
+        System.out.println("0. Quit");
         System.out.println("======================================================");
 
     }
@@ -58,36 +54,28 @@ public class Application {
             switch (choice) {
                 case 1:
                     System.out.println("=======================SEARCHING=========================");
-                    int movieId = searchMovieByKeyword();
-                    String response = APIService.getMovieInfo(movieId);
-                    currentMovie = APIService.getMovieInfoObject(movieId);
+                    int movieId = searchMovieByKeyword(1, cache);
                     cache.put(movieId, currentMovie);
                     System.out.println(currentMovie);
                     break;
                 case 2:
                     System.out.println("==============CREATING=======================");
-                    for (Map.Entry<Integer, TmdbItem> entry : cache.entrySet()) {
-                        MovieDAO.insertMovie((Movie) entry.getValue());
-                    }
-                    System.out.println("The movies have been added to the collection.");
+                    persistCache(cache);
                     break;
                 case 3:
                     System.out.println("================READING================================");
-                    displayAllMoviesInCollection();
+                    readCollection();
                     break;
                 case 4:
                     System.out.println("====================UPDATING=========================");
 //                    System.out.println("Please enter the movie ID:");
 //                    int id = readInt();
 //                    MovieDAO.updateMovieRating(id, 5.0);
-                    updateMovieInCollection();
+//                    updateMovieInCollection();
                     break;
                 case 5:
                     System.out.println("===================DELETING============================");
-                    System.out.println("Please enter the movie ID:");
-                    int id = readInt();
-                    MovieDAO.deleteMovie(id);
-                    System.out.println("The movie has been deleted.");
+
                     break;
                 case 0:
                     System.out.println("Goodbye!");
@@ -106,12 +94,8 @@ public class Application {
     private static void updateMovieInCollection() {
         System.out.println("Please enter the movie ID:");
         String newrating = readString();
-        try {
-            movieDAO.updateMovieRating(currentMovie.getId_tmdb(), Double.parseDouble(newrating));
-            System.out.println("The movie ID has been updated.");
-        } catch (SQLException e) {
-            System.out.println("An error occurred: " + e.getMessage());
-        }
+        //movieDAO.updateMovieRating(currentMovie.getId_tmdb(), Double.parseDouble(newrating));
+        System.out.println("The movie ID has been updated.");
     }
 
 
@@ -121,46 +105,31 @@ public class Application {
                System.out.println(currentMovie);
     }
 
-    private static int searchMovieByKeyword() throws IOException, JsonException {
+    private static int searchMovieByKeyword(int choice, Map<Integer, TmdbItem>cache) throws IOException, JsonException {
 
-        SocketServerService socketServerService = new SocketServerService();
         SocketClientService socketClientService = new SocketClientService();
-        socketServerService.run();
-        socketClientService.run();
-
-
-
-
-
-
-        System.out.println("Please enter the movie ID:");
+        socketClientService.network(1,cache);
         return readInt();
 
     }
 
+    private static void persistCache(Map<Integer, TmdbItem> cache) throws SQLException {
 
+        SocketClientService socketClientService = new SocketClientService();
+        socketClientService.network(2, cache);
 
-
-    private static void addCurrentMovieToCollection() throws SQLException {
-        if (currentMovie != null) {
-            MovieDAO.insertMovie(currentMovie);
-            System.out.println("The current movie has been added to the collection.");
-        } else {
-            System.out.println("No current movie to add. Please search for a movie first.");
-        }
     }
 
-    private static void displayAllMoviesInCollection() throws SQLException {
-        assert MovieDAO.getAllMovies() != null;
-        if (MovieDAO.getAllMovies().isEmpty()) {
-            System.out.println("The collection is empty.");
-        } else {
-            System.out.println(MovieDAO.getAllMovies().size() + " movies found in the collection:");
-            for (Movie movie : MovieDAO.getAllMovies()) {
-                System.out.println(movie);
-            }
-        }
+    private static void readCollection() throws SQLException {
+        SocketClientService socketClientService = new SocketClientService();
+        socketClientService.network(3, null);
     }
+
+
+
+
+
+
 
 
 
@@ -183,4 +152,4 @@ public class Application {
     private static String readString() {
         return scanner.nextLine();
     }
-}
+    }
